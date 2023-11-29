@@ -22,7 +22,7 @@ def populateRoad(n, v_max, empty_road):
 
 
 v_max = 5
-n = 999
+n = 200
 road = populateRoad(n, v_max, empty_road)
 # probability of overreaction
 p = 0.25
@@ -36,7 +36,6 @@ while t < finish:
     tmp = road
     carArr = np.nonzero(road)[0]
     carArr = np.sort(carArr)
-    print(len(carArr))
     if t > 0:
         position = np.vstack((position, carArr))
     for i, posIndex in enumerate(carArr):
@@ -44,8 +43,11 @@ while t < finish:
         # step 1
         tmp[posIndex] = min(tmp[posIndex] + 1, v_max + 1)
         # step 2
-        if i == len(carArr) - 1:
-            d = carArr[0] - tmp[(posIndex + tmp[posIndex] - 1) % (len(tmp) - 1)]
+        vel = tmp[posIndex] - 1
+        if i == len(carArr) - 1 and vel + posIndex >= len(tmp):
+            d = (carArr[0] - (posIndex)) % (len(tmp))
+        elif i == len(carArr) - 1:
+            d = ((carArr[0] - (posIndex)) % (len(tmp))) + ((len(tmp) - 1) - posIndex)
         else:
             d = carArr[i + 1] - posIndex
         if abs(d) <= tmp[posIndex]:
@@ -54,13 +56,12 @@ while t < finish:
         trial = rand.random()
         if trial <= p:
             tmp[posIndex] = max(tmp[posIndex] - 1, 1)
-        # step 4
-    # vels=[tmp[i]-1 for i in carArr]
+    # step 4
     for posIndex in carArr:
         # implement periodic boundary conditions
         vel = tmp[posIndex] - 1
         if posIndex + vel >= len(tmp):
-            road[(posIndex + vel) % (len(tmp)-1)] = tmp[posIndex]
+            road[(posIndex + vel) % (len(tmp))] = tmp[posIndex]
             if vel != 0:
                 road[posIndex] = 0
         else:
@@ -68,18 +69,16 @@ while t < finish:
             if vel != 0:
                 road[posIndex] = 0
     t += 1
-#create arrays necessary for plotting
-print(position)
+# create arrays necessary for plotting
+
 posArr = [[] for i in range(n)]
 tArr = [i for i in range(len(position))]
 for instance in position:
     for i, car in enumerate(instance):
         posArr[i].append(car)
-print(posArr)
 fig, ax = plt.subplots()
 for i, orbit in enumerate(posArr):
-    ax.scatter(tArr, orbit, label=str(i), marker=".")
-#ax.legend()
+    ax.scatter(tArr, orbit, label=str(i), marker=".", color="k", linewidth=0)
 ax.set_xlabel("t (s)")
-ax.set_ylabel("x (7.5 m)")
-#plt.show()
+ax.set_ylabel("x (m)")
+plt.show()
