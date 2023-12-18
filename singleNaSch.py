@@ -26,6 +26,7 @@ n = 200
 road = populateRoad(n, v_max, empty_road)
 # probability of overreaction
 p = 0.25
+q = 0.1
 # array with x(t) for all cars
 position = np.nonzero(road)[0]
 t = 0
@@ -41,7 +42,14 @@ while t < finish:
     for i, posIndex in enumerate(carArr):
         # implement NaSch algorithm for each car
         # step 1
-        tmp[posIndex] = min(tmp[posIndex] + 1, v_max + 1)
+        # implement BJH slow-to-start rule
+        if tmp[posIndex] == 1:
+            if rand.random() <= q:
+                tmp[posIndex] = 1
+            else:
+                tmp[posIndex] = min(tmp[posIndex] + 1, v_max + 1)
+        else:
+            tmp[posIndex] = min(tmp[posIndex] + 1, v_max + 1)
         # step 2
         vel = tmp[posIndex] - 1
         if i == len(carArr) - 1 and vel + posIndex >= len(tmp):
@@ -78,7 +86,7 @@ for instance in position:
         posArr[i].append(car)
 fig, ax = plt.subplots()
 for i, orbit in enumerate(posArr):
-    ax.scatter(tArr, orbit, label=str(i), marker=".", color="k", linewidth=0)
+    ax.scatter(tArr, orbit, label=str(i), marker=".", color="b", linewidth=0, s=5)
 ax.set_xlabel("t (s)")
 ax.set_ylabel("x (m)")
 plt.show()
