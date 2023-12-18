@@ -26,7 +26,7 @@ n = 200
 road = populateRoad(n, v_max, empty_road)
 # probability of overreaction
 p = 0.25
-q = 0.9
+q = 0.05
 # array with x(t) for all cars
 position = np.nonzero(road)[0]
 t = 0
@@ -42,8 +42,8 @@ while t < finish:
     for i, posIndex in enumerate(carArr):
         # implement NaSch algorithm for each car
         # step 1
-        tmp[posIndex] = min(tmp[posIndex] + 1, v_max + 1)
-        # step 2
+        # implement T^2 slow-to-start rule
+        # calculate distance to car in front
         vel = tmp[posIndex] - 1
         if i == len(carArr) - 1 and vel + posIndex >= len(tmp):
             d = (carArr[0] - (posIndex)) % (len(tmp) - 1)
@@ -53,6 +53,11 @@ while t < finish:
             )
         else:
             d = carArr[i + 1] - posIndex
+        if (vel == 0) and (abs(d) == 1):
+            tmp[posIndex] = 1
+        else:
+            tmp[posIndex] = min(tmp[posIndex] + 1, v_max + 1)
+        # step 2
         if abs(d) <= tmp[posIndex]:
             tmp[posIndex] = max(abs(d), 1)
         # step 3

@@ -26,12 +26,13 @@ n = 200
 road = populateRoad(n, v_max, empty_road)
 # probability of overreaction
 p = 0.25
-q = 0.9
+p_s = 0.05
 # array with x(t) for all cars
 position = np.nonzero(road)[0]
 t = 0
 # set duration of simulation
 finish = 600
+flag = [[] for i in range(finish)]
 
 while t < finish:
     tmp = road
@@ -42,7 +43,16 @@ while t < finish:
     for i, posIndex in enumerate(carArr):
         # implement NaSch algorithm for each car
         # step 1
-        tmp[posIndex] = min(tmp[posIndex] + 1, v_max + 1)
+        # implement BJH slow-to-start rule
+        if t == 0:
+            tmp[posIndex] = min(tmp[posIndex] + 1, v_max + 1)
+        elif posIndex in flag[t - 1]:
+            if rand.random() <= p_s:
+                tmp[posIndex] = 1
+            else:
+                tmp[posIndex] = min(tmp[posIndex] + 1, v_max + 1)
+        else:
+            tmp[posIndex] = min(tmp[posIndex] + 1, v_max + 1)
         # step 2
         vel = tmp[posIndex] - 1
         if i == len(carArr) - 1 and vel + posIndex >= len(tmp):
@@ -55,6 +65,7 @@ while t < finish:
             d = carArr[i + 1] - posIndex
         if abs(d) <= tmp[posIndex]:
             tmp[posIndex] = max(abs(d), 1)
+            flag[t].append(posIndex)
         # step 3
         trial = rand.random()
         if trial <= p:
