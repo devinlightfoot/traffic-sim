@@ -33,23 +33,29 @@ p_y = 0.25
 p_x = 0.1
 # record initial road configuration
 position = np.nonzero(road)
-nonZs=[[]]
-for i,x in enumerate(position[0]):
-    nonZs[0].append([x,position[1][i]])
-#nonZs=np.array(nonZs)
-#print(nonZs)
+nonZs = [[]]
+for i, x in enumerate(position[0]):
+    nonZs[0].append([x, position[1][i]])
+# nonZs=np.array(nonZs)
+# print(nonZs)
 t = 0
 # set duration of simulation
-finish = 2
+finish = 600
 
 # implement timestep update loop
 while t < finish:
     tmp = road
     carArr = np.nonzero(tmp)
-    carOrdinates=[]
-    for i,x in enumerate(carArr[0]):
-        carOrdinates.append([x,position[1][i]])
+    carOrdinates = []
+    for i, x in enumerate(carArr[0]):
+        carOrdinates.append([x, position[1][i]])
     if t > 0:
         nonZs.append(carOrdinates)
-
+    for i, pos in enumerate(carOrdinates):
+        # implement NaSch algo for each car
+            # will need to implement lane changing updates before lane updates
+        #step 1
+        tmp[pos[0]][pos[1]] = min(tmp[pos[0]][pos[1]], v_max[pos[0]] + 1)
+        #step 2
+        vel=tmp[pos[0]][pos[1]]-1
     t += 1
