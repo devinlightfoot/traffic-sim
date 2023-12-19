@@ -33,15 +33,23 @@ p_y = 0.25
 p_x = 0.1
 # record initial road configuration
 position = np.nonzero(road)
+nonZs=[[]]
+for i,x in enumerate(position[0]):
+    nonZs[0].append([x,position[1][i]])
+#nonZs=np.array(nonZs)
+#print(nonZs)
 t = 0
 # set duration of simulation
-finish = 600
+finish = 2
 
 # implement timestep update loop
 while t < finish:
     tmp = road
     carArr = np.nonzero(tmp)
+    carOrdinates=[]
+    for i,x in enumerate(carArr[0]):
+        carOrdinates.append([x,position[1][i]])
     if t > 0:
-        position = np.vstack((position, carArr))
+        nonZs.append(carOrdinates)
 
     t += 1
