@@ -46,7 +46,7 @@ while t < finish:
         # step 2
         vel = tmp[posIndex] - 1
         if i == len(carArr) - 1 and vel + posIndex >= len(tmp):
-            d = (carArr[0] - (posIndex)) % (len(tmp) - 1)
+            d = abs((carArr[0] - (posIndex)) % (len(tmp) - 1))
         elif i == len(carArr) - 1:
             d = ((carArr[0] - (posIndex)) % (len(tmp) - 1)) + (
                 (len(tmp) - 1) - posIndex

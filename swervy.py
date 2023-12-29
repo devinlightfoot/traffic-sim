@@ -40,22 +40,37 @@ for i, x in enumerate(position[0]):
 # print(nonZs)
 t = 0
 # set duration of simulation
-finish = 600
+finish = 2
 
 # implement timestep update loop
 while t < finish:
     tmp = road
     carArr = np.nonzero(tmp)
     carOrdinates = []
+    lanes = [[] for i in range(num_lanes)]
     for i, x in enumerate(carArr[0]):
-        carOrdinates.append([x, position[1][i]])
+        carOrdinates.append([x, carArr[1][i]])
+        lanes[x].append(carArr[1][i])
     if t > 0:
         nonZs.append(carOrdinates)
     for i, pos in enumerate(carOrdinates):
         # implement NaSch algo for each car
-            # will need to implement lane changing updates before lane updates
-        #step 1
+        # will need to implement lane changing updates before lane updates
+        # step 1
         tmp[pos[0]][pos[1]] = min(tmp[pos[0]][pos[1]], v_max[pos[0]] + 1)
-        #step 2
-        vel=tmp[pos[0]][pos[1]]-1
+        # step 2
+        vel = tmp[pos[0]][pos[1]] - 1
+        lane_index = lanes[pos[0]].index(pos[1])
+        if lane_index == len(lanes[pos[0]]) - 1 and vel + pos[1] >= len(tmp):
+            d = abs((lanes[pos[0]][0] - lane_index) % (len(tmp) - 1))
+        elif i == len(carOrdinates) - 1:
+            pass
+        else:
+            pass
+        # step 3
+        if rand.random() <= p_y:
+            pass
+        # step 4
+        for pos in carOrdinates:
+            pass
     t += 1
