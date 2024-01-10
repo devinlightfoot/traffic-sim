@@ -25,7 +25,7 @@ def populateRoad(n, v_max, road):
 # set maximum speed per lane of the road
 v_max = [6, 5, 4]
 # set total number of cars on road
-n = 100
+n = 3
 road = populateRoad(n, v_max, empty_road)
 # probability of  acceleration noise
 p_y = 0.25
@@ -53,24 +53,40 @@ while t < finish:
         lanes[x].append(carArr[1][i])
     if t > 0:
         nonZs.append(carOrdinates)
+    print(nonZs[t])
     for i, pos in enumerate(carOrdinates):
+        print(tmp[pos[0]][pos[1]])
         # implement NaSch algo for each car
         # will need to implement lane changing updates before lane updates
         # step 1
         tmp[pos[0]][pos[1]] = min(tmp[pos[0]][pos[1]], v_max[pos[0]] + 1)
+        print(tmp[pos[0]][pos[1]])
         # step 2
         vel = tmp[pos[0]][pos[1]] - 1
         lane_index = lanes[pos[0]].index(pos[1])
         if lane_index == len(lanes[pos[0]]) - 1 and vel + pos[1] >= len(tmp):
             d = abs((lanes[pos[0]][0] - lane_index) % (len(tmp) - 1))
         elif i == len(carOrdinates) - 1:
-            pass
+            d = abs(
+                (lanes[pos[0]][0] - lane_index) % (len(tmp) - 1)
+                + ((len(tmp) - 1) - lane_index)
+            )
         else:
-            pass
+            d = lanes[pos[0]][lane_index + 1] - pos[1]
+        if abs(d) <= pos[1] - 1:
+            tmp[pos[0]][pos[1]] = max(abs(d), 1)
         # step 3
         if rand.random() <= p_y:
-            pass
+            tmp[pos[0]][pos[1]] = max(tmp[pos[0]][pos[1]], 1)
         # step 4
-        for pos in carOrdinates:
-            pass
+    for pos in carOrdinates:
+        vel = pos[1] - 1
+        if pos[1] + vel >= len(tmp[pos[0]]):
+            road[pos[0]][(pos[1] + vel) % (len(tmp[pos[0]]) - 1)] = tmp[pos[0]][pos[1]]
+            if vel != 0:
+                road[pos[0]][pos[1]] = 0
+        else:
+            road[pos[0]][pos[1] + vel] = tmp[pos[0]][pos[1]]
+            if vel != 0:
+                road[pos[0]][pos[1]] = 0
     t += 1

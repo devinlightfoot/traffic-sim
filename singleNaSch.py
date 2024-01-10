@@ -22,7 +22,7 @@ def populateRoad(n, v_max, empty_road):
 
 
 v_max = 5
-n = 200
+n = 300
 road = populateRoad(n, v_max, empty_road)
 # probability of overreaction
 p = 0.25
@@ -53,7 +53,7 @@ while t < finish:
             )
         else:
             d = carArr[i + 1] - posIndex
-        if abs(d) <= tmp[posIndex]:
+        if abs(d) <= tmp[posIndex]-1:
             tmp[posIndex] = max(abs(d), 1)
         # step 3
         trial = rand.random()
@@ -78,10 +78,10 @@ posArr = [[] for i in range(n)]
 tArr = [i for i in range(len(position))]
 for instance in position:
     for i, car in enumerate(instance):
-        posArr[i].append(car)
+        posArr[i].append(7.5*car)
 fig, ax = plt.subplots()
 for i, orbit in enumerate(posArr):
-    ax.scatter(tArr, orbit, label=str(i), marker=".", color="k", linewidth=0, s=5)
+    ax.scatter(tArr, orbit, label=str(i), marker=".", color="k", linewidth=0, s=10)
 ax.set_xlabel("t (s)")
 ax.set_ylabel("x (m)")
 plt.show()
