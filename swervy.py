@@ -28,7 +28,7 @@ v_max = [6, 5, 4]
 n = 3
 road = populateRoad(n, v_max, empty_road)
 # probability of  acceleration noise
-p_y = 0.25
+p_y = 0.1
 # probability of lane change
 p_x = 0.1
 # record initial road configuration
@@ -40,7 +40,7 @@ for i, x in enumerate(position[0]):
 # print(nonZs)
 t = 0
 # set duration of simulation
-finish = 2
+finish = 3
 
 # implement timestep update loop
 while t < finish:
@@ -55,12 +55,14 @@ while t < finish:
         nonZs.append(carOrdinates)
     print(nonZs[t])
     for i, pos in enumerate(carOrdinates):
-        print(tmp[pos[0]][pos[1]])
+        #print("initial")
+        #print(tmp[pos[0]][pos[1]]-1)
         # implement NaSch algo for each car
         # will need to implement lane changing updates before lane updates
-        # step 1
-        tmp[pos[0]][pos[1]] = min(tmp[pos[0]][pos[1]], v_max[pos[0]] + 1)
-        print(tmp[pos[0]][pos[1]])
+        # step 1 (is good)
+        tmp[pos[0]][pos[1]] = min(tmp[pos[0]][pos[1]] + 1, v_max[pos[0]] + 1)
+        #print("step 1")
+        #print(tmp[pos[0]][pos[1]]-1)
         # step 2
         vel = tmp[pos[0]][pos[1]] - 1
         lane_index = lanes[pos[0]].index(pos[1])
@@ -73,14 +75,22 @@ while t < finish:
             )
         else:
             d = lanes[pos[0]][lane_index + 1] - pos[1]
-        if abs(d) <= pos[1] - 1:
+        if abs(d) <= tmp[pos[0]][pos[1]] - 1:
             tmp[pos[0]][pos[1]] = max(abs(d), 1)
+        #print("d")
+        #print(d)
+        #print("step 2")
+        #print(tmp[pos[0]][pos[1]]-1)
         # step 3
         if rand.random() <= p_y:
-            tmp[pos[0]][pos[1]] = max(tmp[pos[0]][pos[1]], 1)
+            tmp[pos[0]][pos[1]] = max(tmp[pos[0]][pos[1]] - 1, 1)
+        # print("step 3")
+        # print(tmp[pos[0]][pos[1]])
         # step 4
     for pos in carOrdinates:
-        vel = pos[1] - 1
+        vel = tmp[pos[0]][pos[1]] - 1
+        #print("final")
+        print(vel)
         if pos[1] + vel >= len(tmp[pos[0]]):
             road[pos[0]][(pos[1] + vel) % (len(tmp[pos[0]]) - 1)] = tmp[pos[0]][pos[1]]
             if vel != 0:
