@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 
 # create single lane, 7.5 km long empty highway
 # with v_max=5, each cell corresponds to 7.5 m and each time step is 1 s
-zeros = bytearray(1000)
+zeros = bytearray(10000)
 empty_road = np.array([int(str(x)) for x in zeros])
 
 
@@ -22,7 +22,7 @@ def populateRoad(n, v_max, empty_road):
 
 
 v_max = 5
-n = 300
+n = 2000
 road = populateRoad(n, v_max, empty_road)
 # probability of overreaction
 p = 0.25
@@ -78,10 +78,10 @@ posArr = [[] for i in range(n)]
 tArr = [i for i in range(len(position))]
 for instance in position:
     for i, car in enumerate(instance):
-        posArr[i].append(7.5*car)
+        posArr[i].append(car)
 fig, ax = plt.subplots()
 for i, orbit in enumerate(posArr):
-    ax.scatter(tArr, orbit, label=str(i), marker=".", color="k", linewidth=0, s=10)
+    ax.scatter(tArr, orbit, marker=".", color="k", linewidth=0, s=5)
 ax.set_xlabel("t (s)")
 ax.set_ylabel("x (m)")
 plt.show()
