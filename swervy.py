@@ -56,6 +56,18 @@ while t < finish:
     for i, pos in enumerate(carOrdinates):
         # implement NaSch algo for each car
         # will need to implement lane changing updates before lane updates
+        #treat each other lane as a viable target
+        if pos[0]==0:
+            if tmp[pos[0]+1][pos[1]]==0:
+                pass
+        elif pos[0]==1:
+            if tmp[pos[0]-1][pos[1]]==0:
+                pass
+            elif tmp[pos[0]+1][pos[1]]==0:
+                pass
+        else:
+            if tmp[pos[0]-1][pos[1]]==0:
+                pass
         # step 1
         tmp[pos[0]][pos[1]] = min(tmp[pos[0]][pos[1]] + 1, v_max[pos[0]] + 1)
         # step 2
