@@ -25,12 +25,12 @@ def populateRoad(n, v_max, road):
 # set maximum speed per lane of the road
 v_max = [6, 5, 4]
 # set total number of cars on road
-n = 200
+n = 10
 road = populateRoad(n, v_max, empty_road)
 # probability of  acceleration noise
 p_y = 0.1
 # probability of lane change
-p_x = 0.25
+p_x = 0.05
 # record initial road configuration
 position = np.nonzero(road)
 nonZs = [[]]
@@ -40,7 +40,7 @@ for i, x in enumerate(position[0]):
 # print(nonZs)
 t = 0
 # set duration of simulation
-finish = 600
+finish =3
 
 # implement timestep update loop
 while t < finish:
@@ -53,36 +53,76 @@ while t < finish:
         lanes[x].append(carArr[1][i])
     if t > 0:
         nonZs.append(carOrdinates)
+        print(lanes[1])
     for i, pos in enumerate(carOrdinates):
         # implement NaSch algo for each car
-        # will need to implement lane changing updates before lane updates
-        #treat each other lane as a viable target
-        if pos[0]==0:
-            if tmp[pos[0]+1][pos[1]]==0:
-                pass
-        elif pos[0]==1:
-            if tmp[pos[0]-1][pos[1]]==0:
-                pass
-            elif tmp[pos[0]+1][pos[1]]==0:
-                pass
-        else:
-            if tmp[pos[0]-1][pos[1]]==0:
-                pass
-        # step 1
-        tmp[pos[0]][pos[1]] = min(tmp[pos[0]][pos[1]] + 1, v_max[pos[0]] + 1)
-        # step 2
         vel = tmp[pos[0]][pos[1]] - 1
         lane_index = lanes[pos[0]].index(pos[1])
-        # print(lane_index)
         if len(lanes[pos[0]]) == 1:
             d = len(tmp[pos[0]])
         elif len(lanes[pos[0]]) != 1 and lane_index == len(lanes[pos[0]]) - 1 and vel + pos[1] >= len(tmp[pos[0]]):
             d = abs((lanes[pos[0]][0] - pos[1]) % (len(tmp) - 1))
-            #print("long last")
         elif len(lanes[pos[0]]) != 1 and lane_index == len(lanes[pos[0]]) - 1:
             d = abs((lanes[pos[0]][0] - pos[1]) % (len(tmp) - 1) + ((len(tmp) - 1) - pos[1]))
         else:
             d = lanes[pos[0]][lane_index + 1] - pos[1]
+        # will need to implement lane changing updates before lane updates
+        #treat each other lane as a viable target
+        tmp_lanes=lanes
+        if pos[0]==0:
+            if tmp[pos[0]+1][pos[1]]==0:
+                tmp_lanes[pos[0]+1].append(pos[1])
+                tmp_lanes[pos[0]+1].sort()
+                lane_index_r = tmp_lanes[pos[0]+1].index(pos[1])
+                if len(lanes[pos[0]+1]) == 1:
+                    d_r = len(tmp[pos[0]+1])
+                elif len(lanes[pos[0]+1]) != 1 and lane_index_r == len(lanes[pos[0]+1]) - 1 and vel + pos[1] >= len(tmp[pos[0]+1]):
+                    d_r = abs((lanes[pos[0]+1][0] - pos[1]) % (len(tmp) - 1))
+                elif len(lanes[pos[0]+1]) != 1 and lane_index_r == len(lanes[pos[0]+1]) - 1:
+                    d_r = abs((lanes[pos[0]+1][0] - pos[1]) % (len(tmp) - 1) + ((len(tmp) - 1) - pos[1]))
+                else:
+                    d_r = lanes[pos[0]+1][lane_index_r + 1] - pos[1]
+        elif pos[0]==1:
+            if tmp[pos[0]-1][pos[1]]==0:
+                tmp_lanes[pos[0]-1].append(pos[1])
+                tmp_lanes[pos[0]-1].sort()
+                lane_index_r = tmp_lanes[pos[0]-1].index(pos[1])
+                if len(lanes[pos[0]-1]) == 1:
+                    d_l = len(tmp[pos[0]-1])
+                elif len(lanes[pos[0]-1]) != 1 and lane_index_r == len(lanes[pos[0]-1]) - 1 and vel + pos[1] >= len(tmp[pos[0]-1]):
+                    d_l = abs((lanes[pos[0]-1][0] - pos[1]) % (len(tmp) - 1))
+                elif len(lanes[pos[0]-1]) != 1 and lane_index_r == len(lanes[pos[0]-1]) - 1:
+                    d_l = abs((lanes[pos[0]-1][0] - pos[1]) % (len(tmp) - 1) + ((len(tmp) - 1) - pos[1]))
+                else:
+                    d_l = lanes[pos[0]-1][lane_index_r + 1] - pos[1] 
+            elif tmp[pos[0]+1][pos[1]]==0:
+                tmp_lanes[pos[0]+1].append(pos[1])
+                tmp_lanes[pos[0]+1].sort()
+                lane_index_r = tmp_lanes[pos[0]+1].index(pos[1])
+                if len(lanes[pos[0]+1]) == 1:
+                    d_r = len(tmp[pos[0]+1])
+                elif len(lanes[pos[0]+1]) != 1 and lane_index_r == len(lanes[pos[0]+1]) - 1 and vel + pos[1] >= len(tmp[pos[0]+1]):
+                    d_r = abs((lanes[pos[0]+1][0] - pos[1]) % (len(tmp) - 1))
+                elif len(lanes[pos[0]+1]) != 1 and lane_index_r == len(lanes[pos[0]+1]) - 1:
+                    d_r = abs((lanes[pos[0]+1][0] - pos[1]) % (len(tmp) - 1) + ((len(tmp) - 1) - pos[1]))
+                else:
+                    d_r = lanes[pos[0]+1][lane_index_r + 1] - pos[1]
+        else:
+            if tmp[pos[0]-1][pos[1]]==0:
+                tmp_lanes[pos[0]-1].append(pos[1])
+                tmp_lanes[pos[0]-1].sort()
+                lane_index_r = tmp_lanes[pos[0]-1].index(pos[1])
+                if len(lanes[pos[0]-1]) == 1:
+                    d_l = len(tmp[pos[0]-1])
+                elif len(lanes[pos[0]-1]) != 1 and lane_index_r == len(lanes[pos[0]-1]) - 1 and vel + pos[1] >= len(tmp[pos[0]-1]):
+                    d_l = abs((lanes[pos[0]-1][0] - pos[1]) % (len(tmp) - 1))
+                elif len(lanes[pos[0]-1]) != 1 and lane_index_r == len(lanes[pos[0]-1]) - 1:
+                    d_l = abs((lanes[pos[0]-1][0] - pos[1]) % (len(tmp) - 1) + ((len(tmp) - 1) - pos[1]))
+                else:
+                    d_l = lanes[pos[0]-1][lane_index_r + 1] - pos[1]
+        # step 1
+        tmp[pos[0]][pos[1]] = min(tmp[pos[0]][pos[1]] + 1, v_max[pos[0]] + 1)
+        # step 2
         if abs(d) <= vel:
             tmp[pos[0]][pos[1]] = max(abs(d), 1)
         # step 3
