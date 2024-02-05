@@ -37,7 +37,7 @@ nonZs = [[]]
 for i, x in enumerate(position[0]):
     nonZs[0].append([x, position[1][i]])
 # nonZs=np.array(nonZs)
-# print(nonZs)
+
 t = 0
 # set duration of simulation
 finish =3
@@ -53,7 +53,6 @@ while t < finish:
         lanes[x].append(carArr[1][i])
     if t > 0:
         nonZs.append(carOrdinates)
-        print(lanes[1])
     for i, pos in enumerate(carOrdinates):
         # implement NaSch algo for each car
         vel = tmp[pos[0]][pos[1]] - 1
@@ -105,8 +104,8 @@ while t < finish:
                 elif len(tmp_lanes[pos[0]-1]) != 1 and lane_index_l == 0 and tmp_lanes[pos[0]-1][0] < tmp_lanes[pos[0]-1][len(tmp_lanes[pos[0]-1])-1]:
                     d_l_b=abs(pos[1]-tmp_lanes[pos[0]-1][len(tmp_lanes[pos[0]-1])-1]) % (len(tmp[pos[0]-1])-1)
                 else:
-                    d_l = tmp_lanes[pos[0]-1][lane_index_r + 1] - pos[1]
-                    d_l_b=pos[1]-tmp_lanes[pos[0]-1][lane_index_r-1]
+                    d_l = tmp_lanes[pos[0]-1][lane_index_l + 1] - pos[1]
+                    d_l_b=pos[1]-tmp_lanes[pos[0]-1][lane_index_l-1]
             elif tmp[pos[0]+1][pos[1]]==0:
                 tmp_lanes[pos[0]+1].append(pos[1])
                 tmp_lanes[pos[0]+1].sort()
@@ -142,8 +141,8 @@ while t < finish:
                 elif len(tmp_lanes[pos[0]-1]) != 1 and lane_index_l == 0 and tmp_lanes[pos[0]-1][0] < tmp_lanes[pos[0]-1][len(tmp_lanes[pos[0]-1])-1]:
                     d_l_b=abs(pos[1]-tmp_lanes[pos[0]-1][len(tmp_lanes[pos[0]-1])-1]) % (len(tmp[pos[0]-1])-1)
                 else:
-                    d_l = tmp_lanes[pos[0]-1][lane_index_r + 1] - pos[1]
-                    d_l_b=pos[1]-tmp_lanes[pos[0]-1][lane_index_r-1]
+                    d_l = tmp_lanes[pos[0]-1][lane_index_l + 1] - pos[1]
+                    d_l_b=pos[1]-tmp_lanes[pos[0]-1][lane_index_l-1]
         # implement NaSch algo for each car
         #step 1
         tmp[pos[0]][pos[1]] = min(tmp[pos[0]][pos[1]] + 1, v_max[pos[0]] + 1)
