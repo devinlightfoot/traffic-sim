@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 
 # create single lane, 7.5 km long empty highway
 # with v_max=5, each cell corresponds to 7.5 m and each time step is 1 s
-zeros = bytearray(10000)
+zeros = bytearray(1000)
 empty_road = np.array([int(str(x)) for x in zeros])
 
 
@@ -22,16 +22,16 @@ def populateRoad(n, v_max, empty_road):
 
 
 v_max = 5
-n = 2000
+n = 200
 road = populateRoad(n, v_max, empty_road)
-# probability of overreaction
-p = 0.25
+# probability of acceleration noise
+p = 0.9
 q = 0.9
 # array with x(t) for all cars
 position = np.nonzero(road)[0]
 t = 0
 # set duration of simulation
-finish = 600
+finish = 300
 
 while t < finish:
     tmp = road

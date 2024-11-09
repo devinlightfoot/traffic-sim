@@ -4,10 +4,10 @@ from matplotlib import pyplot as plt
 
 # set number of lanes and length of the road
 num_lanes = 3
-road_length = 1000
+road_length = 7
 empty_road = np.array([[0 for i in range(road_length)] for i in range(num_lanes)])
 
-
+#generates initial configuration of simulation
 def populateRoad(n, v_max, road):
     w = len(road)
     l = len(road[0])
@@ -22,10 +22,10 @@ def populateRoad(n, v_max, road):
     return populated
 
 
-# set maximum speed per lane of the road
+# set maximum speed, per lane, of the road
 v_max = [6, 5, 4]
 # set total number of cars on road
-n = 10
+n = 5
 road = populateRoad(n, v_max, empty_road)
 # probability of  acceleration noise
 p_y = 0.1
@@ -40,7 +40,7 @@ for i, x in enumerate(position[0]):
 
 t = 0
 # set duration of simulation
-finish =3
+finish = 10
 
 # implement timestep update loop
 while t < finish:
@@ -54,7 +54,6 @@ while t < finish:
     if t > 0:
         nonZs.append(carOrdinates)
     for i, pos in enumerate(carOrdinates):
-        # implement NaSch algo for each car
         vel = tmp[pos[0]][pos[1]] - 1
         lane_index = lanes[pos[0]].index(pos[1])
         #calculate distance headway
@@ -239,10 +238,11 @@ while t < finish:
                         tmp[pos[0]-1][pos[1]]=vel
                         tmp[pos[0]][pos[1]]=0
                         pos[0]-=1
-        # implement NaSch algo for each car
+        # implement 1D NaSch algo for each car for longitudinal traversal
         #step 1
         tmp[pos[0]][pos[1]] = min(tmp[pos[0]][pos[1]] + 1, v_max[pos[0]] + 1)
         # step 2
+        #!!!need to 
         if abs(d) <= vel:
             tmp[pos[0]][pos[1]] = max(abs(d), 1)
         # step 3
@@ -259,4 +259,5 @@ while t < finish:
             road[pos[0]][pos[1] + vel] = tmp[pos[0]][pos[1]]
             if vel != 0:
                 road[pos[0]][pos[1]] = 0
+    print(len(carOrdinates))
     t += 1
